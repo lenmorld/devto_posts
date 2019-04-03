@@ -18,7 +18,7 @@ server.get("/items", (req, res) => {
 });
 
 server.get("/items/:id", (req, res) => {
-   const itemId = parseInt(req.params.id);
+   const itemId = req.params.id;
    const item = data.find(_item => _item.id === itemId);
 
    if (item) {
@@ -33,14 +33,15 @@ server.post("/items", (req, res) => {
    console.log('Adding new item: ', item);
 
    // add new item to array
-   data.push(item);
+   data.push(item)
   
    // return updated list
    res.json(data);
 });
 
+// update an item
 server.put("/items/:id", (req, res) => {
-   const itemId = parseInt(req.params.id);
+   const itemId = req.params.id;
    const item = req.body;
    console.log("Editing item: ", itemId, " to be ", item);
 
@@ -57,13 +58,13 @@ server.put("/items/:id", (req, res) => {
    // replace old list with new one
    data = updatedListItems;
 
-   console.log(updatedListItems);
    res.json(data);
 });
 
 // delete item from list
+// delete item from list
 server.delete("/items/:id", (req, res) => {
-   const itemId = parseInt(req.params.id);
+   const itemId = req.params.id;
 
    console.log("Delete item with id: ", itemId);
 

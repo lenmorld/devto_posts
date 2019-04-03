@@ -1,5 +1,5 @@
 module.exports = [
-	{ "id": 1, "name": "The Lion King", "genre": "animation"},
-	{ "id": 2, "name": "The Godfather", "genre": "crime"},
-	{ "id": 3, "name": "The Dark Knight", "genre": "action"},
+	{ "id": "tt0110357", "name": "The Lion King", "genre": "animation"},
+	{ "id": "tt0068646", "name": "The Godfather", "genre": "crime"},
+	{ "id": "tt0468569", "name": "The Dark Knight", "genre": "action"},
 ];
