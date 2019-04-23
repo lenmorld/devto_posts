@@ -1,0 +1,42 @@
+{
+	"name": "react_context_hoc_example",
+	"version": "1.0.0",
+	"description": "",
+	"main": "server.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "nodemon server.js",
+		"build": "webpack --progress --profile --colors",
+		"dev:client": "webpack-dev-server --hot --inline",
+		"dev": "npm-run-all --parallel start dev:client"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/lenmorld/react_workshop.git"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"express": "^4.16.3",
+		"react": "^16.5.2",
+		"react-dom": "^16.5.2"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.1.0",
+		"@babel/plugin-proposal-class-properties": "^7.4.0",
+		"@babel/preset-react": "^7.0.0",
+		"babel-cli": "^6.26.0",
+		"babel-loader": "^8.0.2",
+		"babel-preset-env": "^1.7.0",
+		"css-loader": "^1.0.0",
+		"nodemon": "^1.18.11",
+		"npm-run-all": "^4.1.5",
+		"style-loader": "^0.23.0",
+		"webpack": "^4.19.1",
+		"webpack-cli": "^3.1.0",
+		"webpack-dev-server": "^3.1.14"
+	},
+	"babel": {
+		"plugins": ["@babel/plugin-proposal-class-properties"]
+	 }
+}

@@ -1,0 +1,6 @@
+	return (
+		<div>
+			<button onClick={this.switchTheme}>Switch theme</button>
+			<Container theme={this.state.theme}/>
+		</div>
+	);
