@@ -6,6 +6,25 @@ const body_parser = require('body-parser');
 
 const port = 4000;
 
+const mongodb = require('mongodb');
+
+const MongoClient = mongodb.MongoClient;
+const uri = "mongodb+srv://user1:abcd1234@cluster0-r1jy0.mongodb.net/test?retryWrites=true";
+const client = new MongoClient(uri, { useNewUrlParser: true });
+client.connect(err => {
+  const collection = client.db("app_db").collection("movies_collection");
+
+  collection.find().toArray((err, result) => {
+      if (err) throw err;
+      console.log(result);
+      // res.json(result);
+   });
+
+  // perform actions on the collection object
+  client.close();
+});
+
+
 // parse JSON (application/json content-type)
 server.use(body_parser.json());
 
@@ -24,7 +43,7 @@ server.get("/items/:id", (req, res) => {
    if (item) {
       res.json(item);
    } else {
-      res.json({ message: `item ${itemId} doesn't exist` })
+      res.json({ message: `item ${itemId} doesn't exist`})
    }
 });
 
@@ -34,7 +53,7 @@ server.post("/items", (req, res) => {
 
    // add new item to array
    data.push(item)
-
+  
    // return updated list
    res.json(data);
 });
@@ -79,5 +98,5 @@ server.delete("/items/:id", (req, res) => {
 
 
 server.listen(port, () => {
-   console.log(`Server listening at ${port}`);
+    console.log(`Server listening at ${port}`);
 });
