@@ -1,6 +1,6 @@
 ---
 title: Complete REST API with mongodb, Node, and Express in 5 minutes
-published: true
+published: false
 description: Connect to Mongo DB cloud with Node and Express in 5 minutes
 tags: #node, #express, #database, #nosql
 cover_image: https://upload.wikimedia.org/wikipedia/commons/d/d9/Node.js_logo.svg
@@ -14,17 +14,17 @@ We'll be using the free cluster of Mongo DB Atlas
 
 > Mongo DB Atlas is a fully-managed database-as-a-service available on AWS, Azure, and GCP
 
-Previously mLab, Atlas is the easiest and fastest way to have a mongo db.**Why?**
+Previously mLab, Atlas is the easiest and fastest way to have a mongo db. **Why?**
 
 - Quick, simple, and fast: no installation and config files. After signing up and creating a cluster (takes 5 minutes), you're all set.
 
-- It's in the cloud: not running in your machine as a Mongo service, nor in a disk file like `diskdb` . You can manage it from anywhere through the Atlas web app. For your app, you only need a connection URL to access the db.
+- It's in the cloud: not running in your machine as a Mongo service, nor in a disk file like `diskdb`. You can manage it from anywhere through the Atlas web app. For your app, you only need a connection URL to access the db.
 
 - Very cool UI: Atlas dashboard is very intuitive, and first-time users will find it easy with the visual cues and steps
 
-`db.js`
-
 # Cloud setup
+
+> There might be some slight screenshot differences to the actual Atlas UI by the time you do this, but the
 
 ### 1. First sign up here:
 
@@ -39,15 +39,15 @@ https://www.mongodb.com/atlas-signup-from-mlab
 The free tier M0 comes with 512 MB Storage, shared RAM and vCPU.
 This should be enough for our starter Node project.
 
-For _Cluster region_, you can pick any provider (AWS, Google, Azure) and the region one closest to you that has a Free Tier.
+For _Cluster region_, you can pick any provider (AWS, Google, Azure) and the region closest to you that has a Free Tier.
 
 ![](screens/2019-09-14-16-15-51.png)
 
-You'll be taken now to the Dashboard which indicates all the steps to be taken
+📃 You'll be taken now to the Dashboard which indicates all the steps to be taken in a nice list.
 
 ![](screens/2019-09-14-16-25-56.png)
 
-The UI is quite intuitive with cues and steps so I'll skip some details along the way.
+The UI is very intuitive with cues and visual steps so I'll skip some details along the way.
 
 ### 3. Create first database user
 
@@ -109,14 +109,12 @@ Copy the _Connection String_, since we'll use this in the next step.
 $ npm install mongodb
 ```
 
-Now that we have the connection code and the mongodb driver,
+Now that we have the connection code and the `mongodb` driver,
 we're ready to dive into code!
 
 # Connecting to the db
 
-1. Grab starter code:
-
-You can grab the code from last chapter here:
+1. Grab the starter code from last chapter here:
 
 https://github.com/lenmorld/devto_posts/tree/master/quick_node_express_diskdb
 

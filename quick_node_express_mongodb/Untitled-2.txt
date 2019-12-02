@@ -1,0 +1,280 @@
+
+For example:
+
+``` 
+(database) data_db > 
+  (collection) movies: [{}, {}, {}] > 
+    (document) movie: { "id": "tt0110357", "name": "The Lion King", "genre": "animation"},
+```
+
+And did I mention *no tables* ?
+
+![no_sql_joke](https://img.devrant.com/devrant/rant/r_335981_AwzqK.jpg)
+
+For details on the whole **SQL vs NoSql**, check out this article:
+{% link https://dev.to/flippedcoding/differences-between-sql-and-nosql-databases-3ml4 %}
+# What is `diskdb` ?
+
+Diskdb allows you to use a file-based database with a mongodb-like API. Think SQLite for mongo.**But why?**
+
+* Quick, simple, and fast - no more installation or config files; perfect for whipping a prototype server with some persistence
+* db is stored along with your code, in regular JSON file, so easy to maintain without extra tooling
+* No sign-up needed - No more signing up and getting tons of emails
+
+**why not?**
+
+* Very simple with limited API functionality
+* Really not for Production
+
+For the record, I loved *mLab* since it was easy, fast and free up to 500MB. But it was recently acquired by MongoDB and replaced with Atlas.*I'll make a separate article for a cloud-based DB with Atlas as well.*
+
+### Headstart
+
+We'll use the base server files from the previous lesson here:
+[Quick REST API with Node + Express] (https://github.com/lenmorld/devto_posts/tree/master/quick_node_express)
+
+Let's get started!
+
+## 1. Create database file 
+
+Create `/data/movies.json` .
+*Data* will be our database and *movies* will be our collection.
+
+``` 
+...
+data/
+    /movies.json
+server.js
+...
+```
+
+Init `movies.json` with an empty array
+
+``` 
+[]
+```
+
+## 2. Exclude data files from Nodemon
+
+If you are using nodemon, you wouldn't want the server to restart for every change in the database files, i.e.an infinitely restarting server 😵
+
+Add `nodemonConfig` to `package.json` , with a command to ignore `/data` .
+
+``` 
+"scripts": {...},
+"nodemonConfig": { "ignore": [ "data/*" ] },
+...
+```
+
+## 3. Install `diskdb` 
+
+``` bash
+$ npm install diskdb
+```
+
+## 4. Import and connect to db
+
+The syntax is: 
+`db.connect('/path/to/db-folder', ['collection-name']);` 
+
+``` javascript
+// server.js
+...
+// diskdb connection
+const db = require('diskdb');
+db.connect('./data', ['movies']);
+```
+
+This effectively creates a connection to the 'data' db, and 'movies' collection.
+
+## 4. Add a movie to test out connection
+
+``` javascript
+// server.js
+...
+// add first movie
+if (!db.movies.find().length) {
+    const movie = {
+        id: "tt0110357",
+        name: "The Lion King",
+        genre: "animation"
+    };
+    db.movies.save(movie);
+}
+console.log(db.movies.find());
+```
+
+Nice and simple!
+`db.[collection].save(object)` to add a document
+`db.[collection].find()` to get all current docs 
+
+We're only adding this movie if the db is initially empty, 
+or else we'll end up with lots of `Lion King` s with different `_id` s 😨
+🦁🦁🦁🦁🦁🦁🦁
+
+This should give you something like this
+
+``` 
+Successfully connected to : ./data
+[ { id: 'tt0110357',
+    name: 'The Lion King',
+    genre: 'animation',
+    _id: 'fed8db042fac4892bb96fd72ad13290e' } ]
+```
+
+Notice that it added a `_id` to our item, used as a global id like in mongodb.
+
+## 5. CRUD to REST to DB
+
+Now that you've seen *Create* and *Read all*, here's the complete roundup of the db operations in diskdb syntax for each CRUD - REST route handler.
+
+For details on the REST - HTTP table and route handlers, check out [prev post] (https://dev.to/lenmorld/quick-rest-api-with-node-and-express-in-5-minutes-336j) .
+
+Also note that `collection` here is **movies** for our example.
+
+| CRUD Operation | REST operation      | Diskdb Operation                               |
+|----------------|---------------------|------------------------------------------------|
+| Create         | POST `/items` | `db.[collection].save(object)` |
+| Read One       | GET `/items/:id` | `db.[collection].find(query)` |
+| Read All       | GET `/items` | `db.[collection].find()` |
+| Update         | PUT `/items/:id` | `db.[collection].update(query, data, options)` |
+| Delete         | DELETE `/items/:id` | `db.[collection].remove(query, multi)` |
+
+## 6. Changing to diskdb operations
+
+Using the table, we could now replace all of our memory-based operations with the db equivalent.
+
+### i. Create ➕
+
+``` javascript
+server.post("/items", (req, res) => {
+    const item = req.body;
+    console.log('Adding new item: ', item);
+    // add new item to db
+    db.movies.save(item);
+    // return updated list
+    res.json(db.movies.find());
+});
+```
+
+### ii. Read one 🕵️
+
+``` javascript
+server.get("/items/:id", (req, res) => {
+    const itemId = req.params.id;
+    const items = db.movies.find({
+        id: itemId
+    });
+    if (items.length) {
+        res.json(items);
+    } else {
+        res.json({
+            message: `item ${itemId} doesn't exist` 
+        })
+    }
+});
+```
+
+### iii. Read all 🕵️
+
+``` javascript
+server.get("/items", (req, res) => {
+    res.json(db.movies.find());
+});
+```
+
+### iv. Update ✏️
+
+``` javascript
+server.put("/items/:id", (req, res) => {
+    const itemId = req.params.id;
+    const item = req.body;
+    console.log("Editing item: ", itemId, " to be ", item);
+
+    db.movies.update({
+        id: itemId
+    }, item);
+
+    res.json(db.movies.find());
+});
+```
+
+### v. Delete ❌
+
+``` javascript
+server.delete("/items/:id", (req, res) => {
+    const itemId = req.params.id;
+    console.log("Delete item with id: ", itemId);
+
+    db.movies.remove({
+        id: itemId
+    });
+
+    res.json(db.movies.find());
+});
+```
+
+## Test it out
+
+Add a new one.
+
+``` bash
+$ curl -X POST -H "Content-Type: application/json" --data '{"id": "tt0109830", "name": "Forrest Gump", "genre": "drama"}' http://localhost:4000/items
+```
+
+Fetch all.
+From browser: http://localhost:4000/items
+
+Fetch one.
+From browser: http://localhost:4000/items/tt0110357
+
+Update it.
+Maybe you think Forrest Gump is an action movie, because of all the war sequences and all the running.🔫🎖️🏃‍♂️
+
+``` bash
+$ curl -X PUT -H "Content-Type: application/json" --data '{"genre": "action"}' http://localhost:4000/items/tt0109830
+
+...{"id":"tt0109830","name":"Forrest Gump","genre":"action"}...
+```
+
+Delete it.
+
+``` bash
+curl -X DELETE http://localhost:4000/items/tt0468569
+```
+
+#### Some cleanup 🧹
+
+Db is working! Now we can remove the unneeded static data file: `data.js` .
+Don't forget to remove the line from `server.js` that imports it
+
+~~let data = require('./data'); ~~
+
+### Here's the complete Code
+
+[Quick db with Node + Express + diskdb] (https://github.com/lenmorld/devto_posts/tree/master/quick_node_express_diskdb)
+
+![hackerman](https://media.giphy.com/media/gGuOldphm6vzW/source.gif)
+
+## *"Okay, that was nice. But what can I do with this? "*
+
+✅ Serving HTML files
+✅ REST API
+✅ Database persistence
+
+Now, this is an actual server for a small project. Add more routes, save some data in the db through API requests. And when you want to reset the db, just reset `movies.json` to [].
+
+## Next up:
+
+(In progress): **Using a Cloud DB with Node and Express**
+
+**This article is part of a Node+Express series I'm working on.**
+
+For the meantime, if you really have to get your Node fix 🤓
+you can access the course materials from the Node workshop that I do in university:
+https://github.com/lenmorld/node_workshop
+
+Happy server-ing! 🤓
+
+Now, if I could find a better emoji for a database than 🥫
+
