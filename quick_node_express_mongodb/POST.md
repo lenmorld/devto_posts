@@ -345,12 +345,18 @@ server.get("/items/:id", (request, response) => {
 
 1. Get the `id` directly from the params (e.g. `1234` for http://localhost/items/1234).
 
-2. Find the item with that `id` using `findOne(query)`. `query` is just an object so you can easily do these, for example:
+2. Find the item with that `id` using `findOne(query)`.
+
+> `query` is just an object so you can use key-value pairs for your queries. We use this query object for `find`, `delete` and other MongoDB commands.
 
 ```javascript
-document.findOne({ id: itemId }); // find using id
-document.findOne({ name: itemName }); // find using name
-document.findOne({ id: itemId, name: itemName, genre: itemGenre }); // find using id, name and genre
+// query can be:
+
+{ id: 1 }; // find using id
+
+{ name: "The Lion King" }; // find using name
+
+{ id: 1, name: "The Lion King", genre: "action" }; // find using id, name and genre
 ```
 
 3. Return the item in the `response`
@@ -414,7 +420,7 @@ server.put("/items/:id", (request, response) => {
 
 Test:
 
-Maybe you think "The Lion King" is a drama, since well, I won't spoil it. 🤫 🦁
+Maybe you think "The Lion King" is a drama, since ...well, I won't spoil it. 🤫 🦁
 
 ```bash
 curl -X PUT -H "Content-Type: application/json" --data '{"genre": "drama"}' http://localhost:4000/items/tt0110357
@@ -427,20 +433,24 @@ curl -X PUT -H "Content-Type: application/json" --data '{"genre": "drama"}' http
 ### v. Delete ❌
 
 ```javascript
-server.delete("/items/:id", (req, res) => {
-	const itemId = req.params.id;
+server.delete("/items/:id", (request, response) => {
+	const itemId = request.params.id;
 	console.log("Delete item with id: ", itemId);
 
-	dbCollection.deleteOne({ id: item_id }, function(err, result) {
-		if (err) throw err;
+	dbCollection.deleteOne({ id: itemId }, function(error, result) {
+		if (error) throw error;
 		// send back entire updated list after successful request
-		dbCollection.find().toArray(function(_err, _result) {
-			if (_err) throw _err;
-			res.json(_result);
+		dbCollection.find().toArray(function(_error, _result) {
+			if (_error) throw _error;
+			response.json(_result);
 		});
 	});
 });
 ```
+
+Here, only the `id` is needed from params, which we pass to `dbCollection.deleteOne(query)`.
+
+As before, you can formulate a query easily to your needs, since it's just an object.
 
 > 🤸‍♀️ Challenge: modularize the `dbCollection.find()` since we're using it in 3 places.
 
@@ -454,8 +464,20 @@ $ curl -X DELETE http://localhost:4000/items/tt0109830
 
 #### Notes
 
-1. We are using callbacks, instead of ES6 Promises, or ES7 async/await...
+1. Wait a minute?! We are using callbacks, instead of ES6 Promises, or ES7 async/await...
 
-2. We return all of the items in the response for all CRUD operations, except for GET one
+   - We'll discuss promisify-ing (and aysnc-await-ing) these callbacks, since honestly they are starting to look like **callback hell**
+
+     ```
+
+     ```
+
+2. Why do We return all of the items in the response **create, update, delete** ?
+
+   - There are a lot of options what to do to synchronize UI and backend after a change, and it is quite a topic for itself.
+
+   See <insert frontend-backend sync post here>
+
+   - Here, we just return the updated items to UI after a create, update and delete. We let the frontend (e.g. React, Vue, Angular, Vanilla JS) update its state and views
 
 3.

@@ -70,16 +70,16 @@ db.initialize(dbName, collectionName, function (dbCollection) { // successCallba
       });
    });
 
-   server.delete("/items/:id", (req, res) => {
-      const itemId = req.params.id;
+   server.delete("/items/:id", (request, response) => {
+      const itemId = request.params.id;
       console.log("Delete item with id: ", itemId);
 
-      dbCollection.deleteOne({ id: itemId }, function (err, result) {
-         if (err) throw err;
+      dbCollection.deleteOne({ id: itemId }, function (error, result) {
+         if (error) throw error;
          // send back entire updated list after successful request
-         dbCollection.find().toArray(function (_err, _result) {
-            if (_err) throw _err;
-            res.json(_result);
+         dbCollection.find().toArray(function (_error, _result) {
+            if (_error) throw _error;
+            response.json(_result);
          });
       });
    });
