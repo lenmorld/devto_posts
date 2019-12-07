@@ -464,20 +464,16 @@ $ curl -X DELETE http://localhost:4000/items/tt0109830
 
 #### Notes
 
-1. Wait a minute?! We are using callbacks, instead of ES6 Promises, or ES7 async/await...
+1. **Callbacks ??!!**, why this instead of ES6 Promises, or ES7 async/await...
 
-   - We'll discuss promisify-ing (and aysnc-await-ing) these callbacks, since honestly they are starting to look like **callback hell**
+   - `MongoClient.connect` only supports callbacks, but we'll _promisify_ (and _aysnc-await-ify_) these callbacks on the next lesson, since honestly they are starting to look like **callback hell**. See this post for a fun rundown on **callback hell**.
 
-     ```
-
-     ```
+{% link https://dev.to/amberjones/how-to-escape-callback-hell-with-javascipt-promises-42d0 %}
 
 2. Why do We return all of the items in the response **create, update, delete** ?
 
-   - There are a lot of options what to do to synchronize UI and backend after a change, and it is quite a topic for itself.
+   - There are a lot of options on what to do to synchronize UI and backend after a change, and it is quite a _Software Architecture_ topic for itself.
 
-   See <insert frontend-backend sync post here>
+{% link https://dev.to/lenmorld/what-is-the-standard-way-to-keep-ui-state-and-backend-state-synced-during-updates-react-and-node-plm %}
 
-   - Here, we just return the updated items to UI after a create, update and delete. We let the frontend (e.g. React, Vue, Angular, Vanilla JS) update its state and views
-
-3.
+- Here, we just return the updated items to UI after a create, update and delete. We let the frontend (e.g. React, Vue, Angular, Vanilla JS) update its state and views from that information.

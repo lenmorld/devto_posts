@@ -1,0 +1,114 @@
+---
+title: Learning Ruby gotchas Part 1
+published: false
+description: 
+tags: beginners, ruby
+tags: #beginners, #ruby
+cover_image: https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Ruby_logo.svg/1024px-Ruby_logo.svg.png
+series: Learning Ruby Gotchas
+---
+My first reaction when learning Rails was its like **magic** 🎩✨. So I figured I'll learn Ruby as well, to enjoy and become efficient in learning Rails. 
+
+And what better way to learn than learn publicly and recap the important things as I go along.
+
+Here's a stab at summarizing the important concepts, or at least the "gotchas" that I had, as someone who's more familiar with Javascript and a bit of Python.
+
+1. Ruby is dynamically-typed
+
+*Dynamic* means the type of the variable is resolved on-the-fly (hence, dynamic). No need to declare type when declaring variable, and the value assigned to variable can be of any type
+
+```ruby
+me = 3  # int
+me = "I'm dynamic"  # string
+me = {:a=>"fancy", :b=>"object"}  # object
+```
+
+2. `to_i` and `to_f`
+
+Convert number strings to integer and float
+
+```ruby
+inty = "1234"
+puts inty.to_i + 1
+=> 1235
+
+floaty = "3.14"
+puts floaty.to_f + 0.01
+=> 3.15
+```
+
+3. Everything is an **object**
+
+Just like in Python, but not like Javascript (e.g. boolean and string are primitives).
+
+You can use `"me".methods` to see all supported methods of String `"me"` and Integer `123`
+
+```ruby
+"me".methods
+=> ["upcase!", "empty?, "to_f", "to_i", "length",...]
+
+123.methods
+=> ["to_s", "odd?", ".even?", ...]
+```
+
+4. 🦆 Duck-typing  and `respond_to?`
+
+*Duck* typed means an object is considered a "Duck" if it has methods of a duck: it walks, quacks like a duck. 
+
+For example, if 123 has `odd?` and `even?` methods, then it must be an Integer?! Use `respond_to?` to check whether an object is able to do / has something, instead of using `.methods` everytime
+
+```ruby
+123.respond_to?("odd?")
+=> true
+```
+
+5. Ranges `(1..5)` and loops
+
+Ruby shines with the flexibility here 🏅
+Use `..` for including high value and `...` for excluding it
+
+```ruby
+(1..5).to_a
+=> [1, 2, 3, 4, 5]
+
+(1...5).to_a
+=> [1, 2, 3, 4]
+```
+
+You can then use these ranges inside loops
+
+```ruby
+for i in (1..5)
+	print i
+end
+=> 12345
+```
+> 🔖 `print` doesn't include a newline like `puts` does
+
+```ruby
+grade = 95
+case grade
+when 80..85
+	puts "B+"
+when 86..90
+	puts "A-"
+when 91..95
+	puts "A"
+when 96..100
+	puts "A+"
+end
+=> A
+```
+> 🔖 Note that the `when` is indented in same level as `case`
+This same level indentation confused me at first.
+
+
+Or inside `{|i| blocks}`, which we'll discuss in detail later
+```
+(10..15).each {|n| print n, ' ' }
+```
+
+
+
+
+
