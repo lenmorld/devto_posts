@@ -25,48 +25,47 @@ db.initialize(dbName, collectionName, function (dbCollection) { // successCallba
    });
 
    // << db CRUD routes >>
-   server.post("/items", (req, res) => {
-      const item = req.body;
-      dbCollection.insertOne(item, (err, result) => {
-         if (err) throw err;
+   server.post("/items", (request, response) => {
+      const item = request.body;
+      dbCollection.insertOne(item, (error, result) => { // callback of insertOne
+         if (error) throw error;
          // return updated list
-         dbCollection.find().toArray((_err, _res) => {
-            if (_err) throw _err;
-            res.json(_res);
+         dbCollection.find().toArray((_error, _result) => { // callback of find
+            if (_error) throw _error;
+            response.json(_result);
          });
       });
    });
 
-   server.get("/items/:id", (req, res) => {
-      const itemId = req.params.id;
+   server.get("/items/:id", (request, response) => {
+      const itemId = request.params.id;
 
-      dbCollection.findOne({ id: itemId }, (err, result) => {
-         if (err) throw err;
+      dbCollection.findOne({ id: itemId }, (error, result) => {
+         if (error) throw error;
          // return item
-         res.json(result);
+         response.json(result);
       });
    });
 
-
-   server.get("/items", (req, res) => {
+   server.get("/items", (request, response) => {
       // return updated list
-      dbCollection.find().toArray((_err, _res) => {
-         if (_err) throw _err;
-         res.json(_res);
+      dbCollection.find().toArray((error, result) => {
+         if (error) throw error;
+         response.json(result);
       });
    });
 
-   server.put("/items/:id", (req, res) => {
-      const itemId = req.params.id;
-      const item = req.body;
+   server.put("/items/:id", (request, response) => {
+      const itemId = request.params.id;
+      const item = request.body;
       console.log("Editing item: ", itemId, " to be ", item);
 
-      dbCollection.updateOne({ id: itemId }, { $set: item }, function (err, result) {
-         if (err) throw err;
+      dbCollection.updateOne({ id: itemId }, { $set: item }, (error, result) => {
+         if (error) throw error;
          // send back entire updated list, to make sure frontend data is up-to-date
-         dbCollection.find().toArray(function (_err, _result) {
-            if (_err) throw _err;
-            res.json(_result);
+         dbCollection.find().toArray(function (_error, _result) {
+            if (_error) throw _error;
+            response.json(_result);
          });
       });
    });

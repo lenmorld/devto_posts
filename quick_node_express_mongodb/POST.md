@@ -123,13 +123,13 @@ Leave the default Node.js version 3+
 
 Copy the _Connection String_. We'll use this in the next step.
 
-Now we're ready to dive into code!
+**Now we're ready to dive into code!**
 
 ![Dive](https://media.giphy.com/media/5zkZRNNb7WW8B9iN3Q/giphy.gif)
 
 # Connecting to the db
 
-1. Grab the starter code from last chapter here:
+### 1. Grab the starter code from last lesson here:
 
 https://github.com/lenmorld/devto_posts/tree/master/quick_node_express_diskdb
 
@@ -139,7 +139,7 @@ https://github.com/lenmorld/devto_posts/tree/master/quick_node_express_diskdb
 $ npm install mongodb
 ```
 
-2. Create a new file called `db.js` in the app root.
+### 2. Create a new file called `db.js` in the app root.
 
 Use this snippet, and replace `CONNECTION_STRING_FROM_ATLAS` with your connection string.
 
@@ -185,7 +185,9 @@ module.exports = {
    - Any failure will be thrown by `failureCallback`
 4. We'll use `dbCollection` to execute mongodb commands.
 
-5. Back to our server, we'll start `server.js` from scratch. We will be using the cloud db connection instead of `diskdb`.
+### Back to our server, we'll start `server.js` from scratch.
+
+We will be using the cloud db connection instead of `diskdb`.
 
 ```javascript
 // server.js
@@ -212,9 +214,9 @@ server.listen(port, () => {
 });
 ```
 
-Nothing new here except the `<< db setup >>` part, where we import `db.js` with out `initialize` method and define variables for the db's info.
+In `<< db setup >>`, we import `db.js` (to use our `initialize` method), and define variables for the db's info.
 
-4. Initialize the database connection.
+### 4. Initialize the database connection.
 
 ```javascript
 // db.js
@@ -225,8 +227,6 @@ db.initialize(dbName, collectionName, function(dbCollection) { // successCallbac
     dbCollection.find().toArray(function(err, result) {
         if (err) throw err;
 		  console.log(result);
-
-		  // << return response to client >>
     });
 
     // << db CRUD routes >>
@@ -237,17 +237,17 @@ db.initialize(dbName, collectionName, function(dbCollection) { // successCallbac
 ...
 ```
 
-We use the method we wrote before to initialize the collection, passing db info and a `successCallback`.
+We `initialize` the db with the `dbName`, `collectionName`, and a `successCallback`.
 
-Inside this callback:
+Inside the `successCallback`:
 
-1. `GET all` using `find()`, which returns a _cursor_.
+1. `GET all` using `collection.find()`, which returns a _cursor_.
 
-   - A _cursor_ is like an iterator
+   - A _cursor_ is like an iterator, where you can do `next`, `hasNext()`, etc
 
 2. Convert the cursor to an array using **async** method `toArray(callback)`
 
-   - ...instead of doing `hasNext()` and `next()` repeteadly
+   - It's simpler for our use case to return full array, than iterate the cursor.
 
 3. `callback` runs after successfully converting the cursor to an array
 
@@ -275,11 +275,13 @@ Server listening at 4000
 
 ![works](https://media.giphy.com/media/hQiyolNu6eF2xvq6zH/giphy.gif)
 
-Now let's complete all the CRUD routes to finish this off.
+**Now let's complete all the CRUD routes!**
 
 # CRUD routes
 
-Since this is **MongoDB** after all, most of the API is similar from last lesson's `diskdb` client to the official `MongoClient`
+Here's a rundown of the CRUD-to-MongoDB operations for our route handlers.
+
+_Notice that there are quite some syntax differences between `diskdb` functions and the official `MongoClient`._
 
 | CRUD Operation | REST operation      | MongoClient Operation                                    |
 | -------------- | ------------------- | -------------------------------------------------------- |
@@ -297,18 +299,26 @@ All of these routes go in the `<< db CRUD routes >>` marker in our code.
 // server.js
 ...
 // << db CRUD routes >>
-server.post("/items", (req, res) => {
-	const item = req.body;
-	dbCollection.insertOne(item, (err, result) => {
-		if (err) throw err;
+server.post("/items", (request, response) => {
+	const item = request.body;
+	dbCollection.insertOne(item, (error, result) => { // callback of insertOne
+		if (error) throw error;
 		// return updated list
-		dbCollection.find().toArray((_err, _res) => {
-			if (_err) throw _err;
-			res.json(_res);
+		dbCollection.find().toArray((_error, _result) => { // callback of find
+			if (_error) throw _error;
+			response.json(_result);
 		});
 	});
 });
 ```
+
+1. For the `POST /items` handler, use `insertOne(item, callback)` to add the movie from `request.body` (parsed by `body_parser` middleware)
+
+2. In the `callback` of `insertOne`, throw the `error` if any. The `result` is not used here (\_which is just a boolean for success and `_id` of inserted document).
+
+3. Get the updated list using `find()`, and return the `_result` as the response in its `callback`.
+
+> Note the two levels of similar callbacks here: outer callback of `insertOne`, and inner one of `find`. This is why I used `(_error, _result)` in the inner to avoid name collision. But feel free to rename them 😉
 
 Test:
 
@@ -322,16 +332,28 @@ Gump", "genre": "drama"}' http://localhost:4000/items
 ### ii. Read one 🕵️
 
 ```javascript
-server.get("/items/:id", (req, res) => {
-	const itemId = req.params.id;
+server.get("/items/:id", (request, response) => {
+	const itemId = request.params.id;
 
-	dbCollection.findOne({ id: itemId }, (err, result) => {
-		if (err) throw err;
+	dbCollection.findOne({ id: itemId }, (error, result) => {
+		if (error) throw error;
 		// return item
-		res.json(result);
+		response.json(result);
 	});
 });
 ```
+
+1. Get the `id` directly from the params (e.g. `1234` for http://localhost/items/1234).
+
+2. Find the item with that `id` using `findOne(query)`. `query` is just an object so you can easily do these, for example:
+
+```javascript
+document.findOne({ id: itemId }); // find using id
+document.findOne({ name: itemName }); // find using name
+document.findOne({ id: itemId, name: itemName, genre: itemGenre }); // find using id, name and genre
+```
+
+3. Return the item in the `response`
 
 Test:
 
@@ -344,14 +366,16 @@ $ curl http://localhost:4000/items/tt0109830
 ### iii. Read all 🕵️
 
 ```javascript
-server.get("/items", (req, res) => {
+server.get("/items", (request, response) => {
 	// return updated list
-	dbCollection.find().toArray((_err, _res) => {
-		if (_err) throw _err;
-		res.json(_res);
+	dbCollection.find().toArray((error, result) => {
+		if (error) throw error;
+		response.json(result);
 	});
 });
 ```
+
+Return all the items in the collection in the response, same in **POST /items**
 
 Test:
 
@@ -364,21 +388,29 @@ $ curl http://localhost:4000/items
 ### iv. Update ✏️
 
 ```javascript
-server.put("/items/:id", (req, res) => {
-	const itemId = req.params.id;
-	const item = req.body;
+server.put("/items/:id", (request, response) => {
+	const itemId = request.params.id;
+	const item = request.body;
 	console.log("Editing item: ", itemId, " to be ", item);
 
-	dbCollection.updateOne({ id: itemId }, { $set: item }, function(err, result) {
-		if (err) throw err;
+	dbCollection.updateOne({ id: itemId }, { $set: item }, (error, result) => {
+		if (error) throw error;
 		// send back entire updated list, to make sure frontend data is up-to-date
-		dbCollection.find().toArray(function(_err, _result) {
-			if (_err) throw _err;
-			res.json(_result);
+		dbCollection.find().toArray(function(_error, _result) {
+			if (_error) throw _error;
+			response.json(_result);
 		});
 	});
 });
 ```
+
+1. Get the `id` from params and the `item` from body (through `body-parser`).
+
+2. Update item with `id` and set it to `item`, using `dbCollection.updateOne(query, { $set: item }, callback`.
+
+   - Note the use of MongoDB-specific `{ $set: item }`
+
+3. Return the updated list, as in `POST /items` and `GET /items`
 
 Test:
 
@@ -389,6 +421,8 @@ curl -X PUT -H "Content-Type: application/json" --data '{"genre": "drama"}' http
 
 [{"_id":"5de5c9d01c9d440000482ef0","id":"tt0110357","name":"The Lion King","genre":"drama"},{"_id":"5de7009967aec74a90f88d67","id":"tt0109830","name":"Forrest Gump","genre":"drama"}]
 ```
+
+// TODO
 
 ### v. Delete ❌
 
@@ -407,6 +441,8 @@ server.delete("/items/:id", (req, res) => {
 	});
 });
 ```
+
+> 🤸‍♀️ Challenge: modularize the `dbCollection.find()` since we're using it in 3 places.
 
 Test:
 
