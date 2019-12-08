@@ -1,22 +1,25 @@
 ---
-title: REST API with Cloud MongoDB, Node, and Express in 5 minutes
-published: false
-description: Connect to Mongo DB cloud with Node and Express in 5 minutes
+title: 🌱 REST API with MongoDB Atlas cloud, Node, and Express in 10 minutes
+published: true
+description: Connect to Mongo DB cloud with Node and Express in 10 minutes
 tags: #node, #express, #database, #nosql
 cover_image: https://upload.wikimedia.org/wikipedia/commons/d/d9/Node.js_logo.svg
 series: Building Node and Express Stuff in 5 minutes
 ---
 
-Let's bring the data to the cloud this time! 💾 ☁
-We'll be using the free cluster of Mongo DB Atlas.
+Let's bring the data to the cloud this time! 💾 ☁.
+And what better way to do that than a **FREE** cloud database! 
+We'll be using the free cluster of **Mongo DB Atlas**.
 
 ## What is Mongo DB Atlas?
 
 > Mongo DB Atlas is a fully-managed database-as-a-service available on AWS, Azure, and GCP
 
-Before Atlas, I used **mLab**, which was then acquired by MongoDB last year. Similar to mLab, MongoDB Atlas is arguably the easiest way to have a cloud MongoDB instance.
+Before Atlas, I used **mLab**. mLab was then acquired by MongoDB last year. Pretty much similar to mLab, MongoDB Atlas is the easiest way to have a cloud MongoDB instance.
 
 **Why?**
+
+- 💲 **0 dollars**: I am not an advertiser for MongoDB, but I love this service and this one won't break the bank ❌🔨🐖, since... well it's no-strings-attached FREE for up to 512MB. Perfect for small side-projects!
 
 - 🏃‍♂️ **Quick, simple, and fast**: no installation and config files. After signing up and creating a cluster (takes 5 minutes), you're all set.
 
@@ -73,7 +76,9 @@ The dialog that appears gives options to:
 
 - [**Add Your Current IP address**], which should automatically get your current public IP address. Optionally add a description such as "My Home IP address"
 
-  - ☝ Remember to do this step again when you switch WiFi, e.g. when moving from coffee shop to home WiFi.
+  - ❗ Remember to do this step again when you switch WiFi, e.g. when moving from coffee shop to home WiFi.
+
+	* 💡 If you are in a public wi-fi, you can use a service like https://whatismyipaddress.com/ to get your IPv4 public address, since `ipconfig` or `ifconfig` might not give you only the internal network address.
 
   - 💣You can use `0.0.0.0/0` to **enable all IP addresses** anywhere, which simplifies this process, but makes it VERY INSECURE.
 
@@ -477,3 +482,34 @@ $ curl -X DELETE http://localhost:4000/items/tt0109830
 {% link https://dev.to/lenmorld/what-is-the-standard-way-to-keep-ui-state-and-backend-state-synced-during-updates-react-and-node-plm %}
 
 - Here, we just return the updated items to UI after a create, update and delete. We let the frontend (e.g. React, Vue, Angular, Vanilla JS) update its state and views from that information.
+
+### Here's the complete Code
+
+[Quick REST API with Node + Express + MongoDB Atlas](https://github.com/lenmorld/devto_posts/tree/master/quick_node_express_mongodb)
+
+![hackerman](https://media.giphy.com/media/gGuOldphm6vzW/source.gif)
+
+## _"Okay, that was nice. But what can I do with this? "_
+
+✅ Serving HTML files
+✅ REST API
+✅ Cloud Database persistence
+
+Now, this is an actual server for a small project. Add more routes, save some data in the db through API requests. Just add frontend!™
+
+## Next up:
+
+(In progress)
+
+- **MongoDB callbacks to Promises and Async/Await**
+
+Happy server-ing! 🤓
+
+---
+
+Now, all this Mongo talk made me hungry.
+I'm gonna have some of my favorite "Hopia Mongo" 🌱 and make some Mongo with rice. 🍚
+
+![Hopia Mongo](https://www.foxyfolksy.com/wp-content/uploads/2016/03/hopia-recipe-1.jpg)
+
+_Photo from FoxyFolksy in article "Hopia Recipe- Munggo And Ube Filling" src: https://www.foxyfolksy.com/hopia-recipe-munggo-ube-filling/_

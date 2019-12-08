@@ -2,9 +2,7 @@
 const mongodb = require('mongodb');
 const MongoClient = mongodb.MongoClient;
 
-// const dbConnectionUrl = 'mongodb+srv://user01:markoj2049@cluster0-md8sj.mongodb.net/test?retryWrites=true&w=majority';
-
-const dbConnectionUrl = 'mongodb+srv://user1:abcd1234@cluster0-gsnef.mongodb.net/test?retryWrites=true&w=majority';
+const dbConnectionUrl = 'CONNECTION_STRING_FROM_ATLAS';
 
 function initialize(dbName, dbCollectionName, successCallback, failureCallback) {
 	MongoClient.connect(dbConnectionUrl, function (err, dbInstance) {
