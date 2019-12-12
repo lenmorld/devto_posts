@@ -77,11 +77,8 @@ const read = () => {
   const voice = getSelectedVoice();
 
   getWebsiteTexts(url).then((texts) => {
-    texts.forEach((text) => {
-      debugger;
-      console.log(text);
-      speechApi.speak(text, voice, pitchSlider.value, rateSlider.value);
-    });
+    const allTextsWithPauseBetween = texts.join(' . ');
+    speechApi.speak(allTextsWithPauseBetween, voice, pitchSlider.value, rateSlider.value);
   });
 };
 

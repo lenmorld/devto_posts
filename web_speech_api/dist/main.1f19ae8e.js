@@ -30465,11 +30465,8 @@ var read = function read() {
 
   var voice = getSelectedVoice();
   getWebsiteTexts(url).then(function (texts) {
-    texts.forEach(function (text) {
-      debugger;
-      console.log(text);
-      speechApi.speak(text, voice, pitchSlider.value, rateSlider.value);
-    });
+    var allTextsWithPauseBetween = texts.join(' . ');
+    speechApi.speak(allTextsWithPauseBetween, voice, pitchSlider.value, rateSlider.value);
   });
 }; // listeners
 
