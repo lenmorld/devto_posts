@@ -16,5 +16,17 @@
   "bugs": {
     "url": "https://github.com/lenmorld/devto_posts/issues"
   },
-  "homepage": "https://github.com/lenmorld/devto_posts#readme"
+  "homepage": "https://github.com/lenmorld/devto_posts#readme",
+  "devDependencies": {
+    "eslint": "^6.7.2",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.19.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-react-hooks": "^1.7.0"
+  },
+  "dependencies": {
+    "eslint-plugin-es6": "^1.0.0"
+  }
 }

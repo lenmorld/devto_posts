@@ -1,39 +1,32 @@
-const WebSpeechApi = (function () {
+class WebSpeechApi {
+  constructor() {
+    this.synth = window.speechSynthesis;
+    this.voices = this.synth.getVoices();
+  }
 
-	let synth = window.speechSynthesis;
-	let voices = synth.getVoices();
+  getVoices() {
+    return this.voices;
+  }
 
-	return {
-		getVoices: function () {
+  speak(string, voice, pitch, rate) {
+    if (this.synth.speaking) {
+      console.error('🗣 already speaking');
+      return;
+    }
 
-		},
+    if (string) {
+      const utterance = new SpeechSynthesisUtterance(string);
 
-		speak: function (string, voice, pitch, rate) {
-			if (synth.speaking) {
-				console.error('🗣 already speaking');
-				return;
-			}
+      utterance.onend = () => console.log('speak finished');
+      utterance.onerror = () => console.log('speak error');
 
-			if (string) {
-				const utterThis = new SpeechSynthesisUtterance(string);
+      utterance.voice = voice;
+      utterance.pitch = pitch;
+      utterance.rate = rate;
 
-				utterThis.onend = () => console.log('speak finished');
-				utterThis.onerror = () => console.log('speak error');
-
-				const utterance = {
-					voice: voice,
-					pitch: pitch,
-					rate: rate,
-					// handlers
-					onend: () => console.log('speak finished'),
-					onerror: () => console.log('speak error'),
-				};
-
-				synth.speak(utterance);
-			}
-		}
-	}
-
-})();
+      this.synth.speak(utterance);
+    }
+  }
+}
 
 export default WebSpeechApi;
