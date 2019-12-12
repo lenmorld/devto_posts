@@ -30,16 +30,24 @@ section {
 	display: flex;
 	flex-direction: column;
 	align-items: stretch;
+	margin-bottom: 4rem;
+	margin-top: 4rem;
 }
 
 section div {
 	margin: 10px;
 	display: flex;
 	flex-direction: row;
+	justify-content: space-around;
 }
 
-button, input {
+button, input, select {
 	font-size: 2rem;
+	padding: 5px;
+}
+
+footer, header {
+	text-align: center;
 }
 
 input {

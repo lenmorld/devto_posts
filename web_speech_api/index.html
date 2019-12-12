@@ -10,7 +10,9 @@
 </head>
 
 <body>
-	<h1>👀 Web page reader using Web Speech API 🔉</h1>
+	<header>
+		<h1>👀 Web page reader using Web Speech API 🔉</h1>
+	</header>
 	
 	<section>
 		<div>
@@ -30,15 +32,20 @@
 			<input type="text" placeholder="Full site URL of page to read" id="siteUrlInput" />
 		</div>
 		<div>
-			<button id="play">Read site</button></h1>
+			<button id="play">Read site ▶️</button></h1>
+			<button id="pause">Pause ⏸️</button></h1>
+			<button id="restart">Restart 🔄</button></h1>
 		</div>
 	</section>
 
+	<footer>
+		<hr>
+		<h3>🧪 Web Speech API is Experimental tech, check <a href="https://caniuse.com/#search=web%20speech%20api">Browser compatibility</a>
+		</h3>
+	
+		<h3>based off example from <a href="https://github.com/mdn/web-speech-api">Web Speech Api</a></h3>
+	</footer>
 
-	<h3>🧪 Web Speech API is Experimental tech, check <a href="https://caniuse.com/#search=web%20speech%20api">Browser compatibility</a>
-	</h3>
-
-	<h3>based off example from <a href="https://github.com/mdn/web-speech-api">Web Speech Api</a></h3>
 
 	<script src="./main.js"></script>
 </body>

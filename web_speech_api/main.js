@@ -102,13 +102,6 @@ playButton.addEventListener('click', () => {
 // FIRE
 populateVoiceList();
 
-// // bind listeners
-// if (synth.onvoiceschanged) {
-//   synth.onvoiceschanged = populateVoiceList;
-// }
+// TODO
 
-// const siteUrl = 'https://dev.to/chrisrhymes/creating-my-first-npm-package-4o41';
-
-// getWebsiteTexts(siteUrl).then((texts) => {
-//   texts.forEach((text) => console.log(text));
-// });
+// pause, play, restart

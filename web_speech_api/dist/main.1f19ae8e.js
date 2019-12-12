@@ -30487,14 +30487,8 @@ playButton.addEventListener('click', function () {
   read();
 }); // FIRE
 
-populateVoiceList(); // // bind listeners
-// if (synth.onvoiceschanged) {
-//   synth.onvoiceschanged = populateVoiceList;
-// }
-// const siteUrl = 'https://dev.to/chrisrhymes/creating-my-first-npm-package-4o41';
-// getWebsiteTexts(siteUrl).then((texts) => {
-//   texts.forEach((text) => console.log(text));
-// });
+populateVoiceList(); // TODO
+// pause, play, restart
 },{"axios":"node_modules/axios/index.js","cheerio":"node_modules/cheerio/index.js","./speech":"speech.js"}],"../../../.nvm/versions/node/v8.16.0/lib/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
