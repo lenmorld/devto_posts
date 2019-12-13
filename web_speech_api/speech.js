@@ -8,7 +8,7 @@ class WebSpeechApi {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         try {
-		  const voices = this.synth.getVoices();
+          const voices = this.synth.getVoices();
           resolve(voices);
         } catch (error) {
           reject(error);
@@ -17,7 +17,7 @@ class WebSpeechApi {
     });
   }
 
-  speak(string, voice, pitch, rate) {
+  speak(string, voice, pitch, rate, finishUtteranceCallback) {
     if (this.synth.speaking) {
       console.error('🗣 already speaking');
       return;
@@ -26,12 +26,16 @@ class WebSpeechApi {
     if (string) {
       const utterance = new SpeechSynthesisUtterance(string);
 
-	  // https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance
-      //   utterance.onstart = () => console.log('utterance started');
-      //   utterance.onpause = () => console.log('utterance pause');
-      //   utterance.onresume = () => console.log('utterance resume');
-      //   utterance.onend = () => console.log('utterance finished');
-      //   utterance.onerror = () => console.log('utterance error');
+      // https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance
+      utterance.onstart = () => console.log('utterance started');
+      utterance.onpause = () => console.log('utterance pause');
+      utterance.onresume = () => console.log('utterance resume');
+      utterance.onend = () => {
+        console.log('utterance end');
+
+        finishUtteranceCallback();
+      };
+      utterance.onerror = () => console.log('utterance error');
 
       utterance.voice = voice;
       utterance.pitch = pitch;

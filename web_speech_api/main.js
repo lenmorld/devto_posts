@@ -8,13 +8,13 @@ let voices;
 // const voices = speechApi.getVoices();
 
 // init dom elements
-const urlOrTextInput = document.querySelector('input[type="text"]');
+const urlOrTextInput = document.querySelector('textarea');
 const voiceSelect = document.querySelector('select');
 const rateSlider = document.querySelector('#rate');
 const pitchSlider = document.querySelector('#pitch');
 const playButton = document.querySelector('#play');
 const pauseButton = document.querySelector('#pause');
-const restartButton = document.querySelector('#restart');
+const stopButton = document.querySelector('#stop');
 
 const rateValue = document.querySelector('.rate-value');
 const pitchValue = document.querySelector('.pitch-value');
@@ -24,7 +24,7 @@ const getSelectedVoice = () => {
     'data-name',
   );
 
-  return voices.find((v) => v.name === selectedOption);
+  return voices.find(v => v.name === selectedOption);
 };
 
 const populateVoiceList = () => {
@@ -49,7 +49,7 @@ const populateVoiceList = () => {
   voiceSelect.selectedIndex = selectedIndex;
 };
 
-const getWebsiteTexts = (siteUrl) => new Promise((resolve, reject) => {
+const getWebsiteTexts = siteUrl => new Promise((resolve, reject) => {
   axios
     .get(siteUrl)
     .then((result) => {
@@ -58,13 +58,22 @@ const getWebsiteTexts = (siteUrl) => new Promise((resolve, reject) => {
 
       const texts = contents
         .toArray()
-        .map((p) => p.data && p.data.trim())
-        .filter((p) => p);
+        .map(p => p.data && p.data.trim())
+        .filter(p => p);
 
       resolve(texts);
     })
-    .catch((err) => reject(err));
+    .catch(err => reject(err));
 });
+
+const finishUtteranceCallback = () => {
+  playButton.disabled = false;
+  pauseButton.disabled = true;
+  stopButton.disabled = true;
+
+  rateSlider.disabled = false;
+  pitchSlider.disabled = false;
+};
 
 const read = () => {
   const urlOrText = urlOrTextInput.value;
@@ -89,11 +98,11 @@ const read = () => {
         voice,
         pitchSlider.value,
         rateSlider.value,
+        finishUtteranceCallback,
       );
     });
   } else {
-    //   debugger;
-    speechApi.speak(urlOrText, voice, pitchSlider.value, rateSlider.value);
+    speechApi.speak(urlOrText, voice, pitchSlider.value, rateSlider.value, finishUtteranceCallback);
   }
 };
 
@@ -107,18 +116,41 @@ rateSlider.onchange = function () {
 };
 
 playButton.addEventListener('click', () => {
-  if (speechApi.paused) {
+  if (speechApi.synth.paused) {
     speechApi.synth.resume();
   } else {
     // start from beginning
     read();
   }
+
+  playButton.disabled = true;
+  pauseButton.disabled = false;
+  stopButton.disabled = false;
+
+  rateSlider.disabled = true;
+  pitchSlider.disabled = true;
 });
 
 pauseButton.addEventListener('click', () => {
-  //   if (!speechApi.paused) {
   speechApi.synth.pause();
-  //   }
+
+  playButton.disabled = false;
+  pauseButton.disabled = true;
+  stopButton.disabled = true;
+
+  rateSlider.disabled = true;
+  pitchSlider.disabled = true;
+});
+
+stopButton.addEventListener('click', () => {
+  speechApi.synth.cancel();
+
+  playButton.disabled = false;
+  pauseButton.disabled = true;
+  stopButton.disabled = true;
+
+  rateSlider.disabled = false;
+  pitchSlider.disabled = false;
 });
 
 // FIRE
@@ -135,7 +167,3 @@ fire();
 if (speechSynthesis.onvoiceschanged !== undefined) {
   speechSynthesis.onvoiceschanged = fire;
 }
-
-// TODO
-
-// pause, play, restart
