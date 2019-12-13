@@ -30347,13 +30347,25 @@ function () {
     _classCallCheck(this, WebSpeechApi);
 
     this.synth = window.speechSynthesis;
-    this.voices = this.synth.getVoices();
   }
 
   _createClass(WebSpeechApi, [{
     key: "getVoices",
     value: function getVoices() {
-      return this.voices;
+      var _this = this;
+
+      // return this.voices;
+      return new Promise(function (resolve, reject) {
+        setTimeout(function () {
+          try {
+            var voices = _this.synth.getVoices();
+
+            resolve(voices);
+          } catch (error) {
+            reject(error);
+          }
+        }, 100);
+      });
     }
   }, {
     key: "speak",
@@ -30364,19 +30376,17 @@ function () {
       }
 
       if (string) {
-        var utterance = new SpeechSynthesisUtterance(string);
-
-        utterance.onend = function () {
-          return console.log('speak finished');
-        };
-
-        utterance.onerror = function () {
-          return console.log('speak error');
-        };
+        var utterance = new SpeechSynthesisUtterance(string); // https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance
+        //   utterance.onstart = () => console.log('utterance started');
+        //   utterance.onpause = () => console.log('utterance pause');
+        //   utterance.onresume = () => console.log('utterance resume');
+        //   utterance.onend = () => console.log('utterance finished');
+        //   utterance.onerror = () => console.log('utterance error');
 
         utterance.voice = voice;
         utterance.pitch = pitch;
-        utterance.rate = rate;
+        utterance.rate = rate; //   debugger;
+
         this.synth.speak(utterance);
       }
     }
@@ -30399,13 +30409,16 @@ var _speech = _interopRequireDefault(require("./speech"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var speechApi = new _speech.default();
-var voices = speechApi.getVoices(); // init dom elements
+var voices; // const voices = speechApi.getVoices();
+// init dom elements
 
-var siteUrlInput = document.querySelector('#siteUrlInput');
+var urlOrTextInput = document.querySelector('input[type="text"]');
 var voiceSelect = document.querySelector('select');
 var rateSlider = document.querySelector('#rate');
 var pitchSlider = document.querySelector('#pitch');
 var playButton = document.querySelector('#play');
+var pauseButton = document.querySelector('#pause');
+var restartButton = document.querySelector('#restart');
 var rateValue = document.querySelector('.rate-value');
 var pitchValue = document.querySelector('.pitch-value');
 
@@ -30454,26 +30467,30 @@ var getWebsiteTexts = function getWebsiteTexts(siteUrl) {
 };
 
 var read = function read() {
-  var url = siteUrlInput.value; // simple check if valid URL
+  var urlOrText = urlOrTextInput.value;
+  var isUrl = false; // simple check if valid URL
 
   try {
-    new URL(url);
+    new URL(urlOrText);
+    isUrl = true;
   } catch (error) {
-    console.error('not valid URL!');
-    return;
+    // not a URL, treat as string
+    isUrl = false;
   }
 
   var voice = getSelectedVoice();
-  getWebsiteTexts(url).then(function (texts) {
-    var allTextsWithPauseBetween = texts.join(' . ');
-    speechApi.speak(allTextsWithPauseBetween, voice, pitchSlider.value, rateSlider.value);
-  });
+
+  if (isUrl) {
+    getWebsiteTexts(urlOrText).then(function (texts) {
+      var allTextsWithPauseBetween = texts.join(' . ');
+      speechApi.speak(allTextsWithPauseBetween, voice, pitchSlider.value, rateSlider.value);
+    });
+  } else {
+    //   debugger;
+    speechApi.speak(urlOrText, voice, pitchSlider.value, rateSlider.value);
+  }
 }; // listeners
 
-
-if (speechApi.onvoiceschanged !== undefined) {
-  speechApi.onvoiceschanged = populateVoiceList;
-}
 
 pitchSlider.onchange = function () {
   pitchValue.textContent = pitchSlider.value;
@@ -30484,10 +30501,30 @@ rateSlider.onchange = function () {
 };
 
 playButton.addEventListener('click', function () {
-  read();
+  if (speechApi.paused) {
+    speechApi.synth.resume();
+  } else {
+    // start from beginning
+    read();
+  }
+});
+pauseButton.addEventListener('click', function () {
+  //   if (!speechApi.paused) {
+  speechApi.synth.pause(); //   }
 }); // FIRE
 
-populateVoiceList(); // TODO
+var fire = function fire() {
+  speechApi.getVoices().then(function (_voices) {
+    voices = _voices;
+    populateVoiceList();
+  });
+};
+
+fire(); // chrome
+
+if (speechSynthesis.onvoiceschanged !== undefined) {
+  speechSynthesis.onvoiceschanged = fire;
+} // TODO
 // pause, play, restart
 },{"axios":"node_modules/axios/index.js","cheerio":"node_modules/cheerio/index.js","./speech":"speech.js"}],"../../../.nvm/versions/node/v8.16.0/lib/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];

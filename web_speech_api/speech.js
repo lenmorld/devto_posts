@@ -1,11 +1,20 @@
 class WebSpeechApi {
   constructor() {
     this.synth = window.speechSynthesis;
-    this.voices = this.synth.getVoices();
   }
 
   getVoices() {
-    return this.voices;
+    // return this.voices;
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        try {
+		  const voices = this.synth.getVoices();
+          resolve(voices);
+        } catch (error) {
+          reject(error);
+        }
+      }, 100);
+    });
   }
 
   speak(string, voice, pitch, rate) {
@@ -17,13 +26,18 @@ class WebSpeechApi {
     if (string) {
       const utterance = new SpeechSynthesisUtterance(string);
 
-      utterance.onend = () => console.log('speak finished');
-      utterance.onerror = () => console.log('speak error');
+	  // https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance
+      //   utterance.onstart = () => console.log('utterance started');
+      //   utterance.onpause = () => console.log('utterance pause');
+      //   utterance.onresume = () => console.log('utterance resume');
+      //   utterance.onend = () => console.log('utterance finished');
+      //   utterance.onerror = () => console.log('utterance error');
 
       utterance.voice = voice;
       utterance.pitch = pitch;
       utterance.rate = rate;
 
+      //   debugger;
       this.synth.speak(utterance);
     }
   }

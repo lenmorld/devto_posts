@@ -4,14 +4,17 @@ import cheerio from 'cheerio';
 import WebSpeechApi from './speech';
 
 const speechApi = new WebSpeechApi();
-const voices = speechApi.getVoices();
+let voices;
+// const voices = speechApi.getVoices();
 
 // init dom elements
-const siteUrlInput = document.querySelector('#siteUrlInput');
+const urlOrTextInput = document.querySelector('input[type="text"]');
 const voiceSelect = document.querySelector('select');
 const rateSlider = document.querySelector('#rate');
 const pitchSlider = document.querySelector('#pitch');
 const playButton = document.querySelector('#play');
+const pauseButton = document.querySelector('#pause');
+const restartButton = document.querySelector('#restart');
 
 const rateValue = document.querySelector('.rate-value');
 const pitchValue = document.querySelector('.pitch-value');
@@ -64,29 +67,37 @@ const getWebsiteTexts = (siteUrl) => new Promise((resolve, reject) => {
 });
 
 const read = () => {
-  const url = siteUrlInput.value;
+  const urlOrText = urlOrTextInput.value;
+  let isUrl = false;
 
   // simple check if valid URL
   try {
-    new URL(url);
+    new URL(urlOrText);
+    isUrl = true;
   } catch (error) {
-    console.error('not valid URL!');
-    return;
+    // not a URL, treat as string
+    isUrl = false;
   }
 
   const voice = getSelectedVoice();
 
-  getWebsiteTexts(url).then((texts) => {
-    const allTextsWithPauseBetween = texts.join(' . ');
-    speechApi.speak(allTextsWithPauseBetween, voice, pitchSlider.value, rateSlider.value);
-  });
+  if (isUrl) {
+    getWebsiteTexts(urlOrText).then((texts) => {
+      const allTextsWithPauseBetween = texts.join(' . ');
+      speechApi.speak(
+        allTextsWithPauseBetween,
+        voice,
+        pitchSlider.value,
+        rateSlider.value,
+      );
+    });
+  } else {
+    //   debugger;
+    speechApi.speak(urlOrText, voice, pitchSlider.value, rateSlider.value);
+  }
 };
 
 // listeners
-if (speechApi.onvoiceschanged !== undefined) {
-  speechApi.onvoiceschanged = populateVoiceList;
-}
-
 pitchSlider.onchange = function () {
   pitchValue.textContent = pitchSlider.value;
 };
@@ -96,11 +107,34 @@ rateSlider.onchange = function () {
 };
 
 playButton.addEventListener('click', () => {
-  read();
+  if (speechApi.paused) {
+    speechApi.synth.resume();
+  } else {
+    // start from beginning
+    read();
+  }
+});
+
+pauseButton.addEventListener('click', () => {
+  //   if (!speechApi.paused) {
+  speechApi.synth.pause();
+  //   }
 });
 
 // FIRE
-populateVoiceList();
+const fire = () => {
+  speechApi.getVoices().then((_voices) => {
+    voices = _voices;
+    populateVoiceList();
+  });
+};
+
+fire();
+
+// chrome
+if (speechSynthesis.onvoiceschanged !== undefined) {
+  speechSynthesis.onvoiceschanged = fire;
+}
 
 // TODO
 
