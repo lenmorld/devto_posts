@@ -35,6 +35,10 @@ select {
 	padding: 5px;
 }
 
+button {
+	margin: 0 2rem;
+}
+
 textarea {
 	font-size: 2rem;
 	word-wrap: break-word;
