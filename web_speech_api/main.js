@@ -54,7 +54,7 @@ const getWebsiteTexts = siteUrl => new Promise((resolve, reject) => {
     .get(siteUrl)
     .then((result) => {
       const $ = cheerio.load(result.data);
-      const contents = $('p, h1, h2, h3').contents(); // get all "readable" contents
+      const contents = $('p, h1, h2, h3').contents(); // get all "readable" element contents
 
       const texts = contents
         .toArray()
