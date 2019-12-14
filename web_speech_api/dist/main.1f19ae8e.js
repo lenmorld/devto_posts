@@ -30437,7 +30437,7 @@ var getWebsiteTexts = function getWebsiteTexts(siteUrl) {
     _axios.default.get(siteUrl).then(function (result) {
       var $ = _cheerio.default.load(result.data);
 
-      var contents = $('p, h1, h2, h3').contents(); // get all <p> contents
+      var contents = $('p, h1, h2, h3').contents(); // get all "readable" contents
 
       var texts = contents.toArray().map(function (p) {
         return p.data && p.data.trim();
@@ -30563,7 +30563,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53761" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55004" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
