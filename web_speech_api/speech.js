@@ -4,7 +4,6 @@ class WebSpeechApi {
   }
 
   getVoices() {
-    // return this.voices;
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         try {
@@ -41,7 +40,6 @@ class WebSpeechApi {
       utterance.pitch = pitch;
       utterance.rate = rate;
 
-      //   debugger;
       this.synth.speak(utterance);
     }
   }

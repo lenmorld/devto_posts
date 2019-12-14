@@ -1,5 +1,5 @@
 POST.md
 scratch/
-dist/
 .cache/
 node_modules/
+*.stackdump

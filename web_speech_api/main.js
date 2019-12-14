@@ -5,7 +5,6 @@ import WebSpeechApi from './speech';
 
 const speechApi = new WebSpeechApi();
 let voices;
-// const voices = speechApi.getVoices();
 
 // init dom elements
 const urlOrTextInput = document.querySelector('textarea');
@@ -63,7 +62,12 @@ const getWebsiteTexts = siteUrl => new Promise((resolve, reject) => {
 
       resolve(texts);
     })
-    .catch(err => reject(err));
+    .catch((err) => {
+      // handle err
+      const errorObj = err.toJSON();
+      alert(`${errorObj.message} on ${errorObj.config.url}\nPlease try a different website`);
+      urlOrTextInput.value = '';
+    });
 });
 
 const finishUtteranceCallback = () => {
@@ -129,6 +133,9 @@ playButton.addEventListener('click', () => {
 
   rateSlider.disabled = true;
   pitchSlider.disabled = true;
+  pitchSlider.disabled = true;
+
+  voiceSelect.disabled = true;
 });
 
 pauseButton.addEventListener('click', () => {
@@ -136,10 +143,11 @@ pauseButton.addEventListener('click', () => {
 
   playButton.disabled = false;
   pauseButton.disabled = true;
-  stopButton.disabled = true;
+  stopButton.disabled = false;
 
   rateSlider.disabled = true;
   pitchSlider.disabled = true;
+  voiceSelect.disabled = true;
 });
 
 stopButton.addEventListener('click', () => {
@@ -151,6 +159,7 @@ stopButton.addEventListener('click', () => {
 
   rateSlider.disabled = false;
   pitchSlider.disabled = false;
+  voiceSelect.disabled = false;
 });
 
 // FIRE
