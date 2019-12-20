@@ -1,11 +1,11 @@
 ---
-title: Learning Ruby gotchas Part 1
+title: Ruby gotchas Part 1
 published: false
 description: 
 tags: beginners, ruby
 tags: #beginners, #ruby
 cover_image: https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Ruby_logo.svg/1024px-Ruby_logo.svg.png
-series: Learning Ruby Gotchas
+series: Ruby Gotchas
 ---
 My first reaction when learning Rails was its like **magic** 🎩✨. So I figured I'll learn Ruby as well, to enjoy and become efficient in learning Rails. 
 
