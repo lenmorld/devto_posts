@@ -7,7 +7,7 @@
 		"body-parser": "^1.18.3",
 		"diskdb": "^0.1.17",
 		"ejs": "^2.6.1",
-		"express": "^4.16.4",
+		"express": "^4.17.3",
 		"mongodb": "^3.3.5",
 		"nodemon": "^1.18.10"
 	},
